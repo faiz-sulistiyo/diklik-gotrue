@@ -233,6 +233,7 @@ type SmsProviderConfiguration struct {
 	Messagebird  MessagebirdProviderConfiguration  `json:"messagebird"`
 	Textlocal    TextlocalProviderConfiguration    `json:"textlocal"`
 	Vonage       VonageProviderConfiguration       `json:"vonage"`
+	YM           YMProviderConfiguration           `json:"ym"`
 }
 
 func (c *SmsProviderConfiguration) GetTestOTP(phone string, now time.Time) (string, bool) {
@@ -254,6 +255,12 @@ type TwilioVerifyProviderConfiguration struct {
 	AccountSid        string `json:"account_sid" split_words:"true"`
 	AuthToken         string `json:"auth_token" split_words:"true"`
 	MessageServiceSid string `json:"message_service_sid" split_words:"true"`
+}
+
+type YMProviderConfiguration struct {
+	AccountSid        string `json:"account_sid" split_words:"true"`
+	MessageServiceSid string `json:"message_service_sid" split_words:"true"`
+	Namespace         string `json:"name_space" split_words:"true"`
 }
 
 type MessagebirdProviderConfiguration struct {
@@ -579,4 +586,17 @@ func (t *VonageProviderConfiguration) Validate() error {
 
 func (t *SmsProviderConfiguration) IsTwilioVerifyProvider() bool {
 	return t.Provider == "twilio_verify"
+}
+
+func (t *YMProviderConfiguration) Validate() error {
+	if t.AccountSid == "" {
+		return errors.New("missing Missing YM Account Sid")
+	}
+	if t.MessageServiceSid == "" {
+		return errors.New("missing Missing YM Message Service Sid")
+	}
+	if t.Namespace == "" {
+		return errors.New("missing Missing YM Namespace")
+	}
+	return nil
 }
